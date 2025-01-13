@@ -155,14 +155,14 @@ function install_tools() {
 	for gotool in "${!gotools[@]}"; do
 		((go_step++))
 		if [[ $upgrade_tools == "false" ]]; then
-			if command -v "$gotool" &>/dev/null; then
+			if command -v "$gotool" ; then
 				echo -e "[${yellow}SKIPPING${reset}] $gotool already installed at $(command -v "$gotool")"
 				continue
 			fi
 		fi
 
 		# Install the Go tool
-		eval "${gotools[$gotool]}" &>/dev/null
+		eval "${gotools[$gotool]}"
 		exit_status=$?
 		if [[ $exit_status -eq 0 ]]; then
 			echo -e "${yellow}$gotool installed (${go_step}/${#gotools[@]})${reset}"
@@ -181,14 +181,14 @@ function install_tools() {
 	for pipxtool in "${!pipxtools[@]}"; do
 		((pipx_step++))
 		if [[ $upgrade_tools == "false" ]]; then
-			if command -v "$pipxtool" &>/dev/null; then
+			if command -v "$pipxtool" ; then
 				echo -e "[${yellow}SKIPPING${reset}] $pipxtool already installed at $(command -v "$pipxtool")"
 				continue
 			fi
 		fi
 
 		# Install the pipx tool
-		eval pipx install "git+https://github.com/${pipxtools[$pipxtool]}" &>/dev/null
+		eval pipx install "git+https://github.com/${pipxtools[$pipxtool]}"
 		exit_status=$?
 		if [[ $exit_status -ne 0 ]]; then
 			echo -e "${red}Failed to install $pipxtool, try manually (${pipx_step}/${#pipxtools[@]})${reset}"
@@ -198,7 +198,7 @@ function install_tools() {
 		fi
 
 		# Upgrade the pipx tool
-		eval pipx upgrade "${pipxtool}" &>/dev/null
+		eval pipx upgrade "${pipxtool}"
 		exit_status=$?
 		if [[ $exit_status -ne 0 ]]; then
 			echo -e "${red}Failed to upgrade $pipxtool, try manually (${pipx_step}/${#pipxtools[@]})${reset}"
@@ -225,7 +225,7 @@ function install_tools() {
 		fi
 		# Clone the repository
 		if [[ ! -d "${dir}/${repo}" || -z "$(ls -A "${dir}/${repo}")" ]]; then
-			git clone --filter="blob:none" "https://github.com/${repos[$repo]}" "${dir}/${repo}" &>/dev/null
+			git clone --filter="blob:none" "https://github.com/${repos[$repo]}" "${dir}/${repo}"
 			exit_status=$?
 			if [[ $exit_status -ne 0 ]]; then
 				echo -e "${red}Unable to clone repository $repo.${reset}"
@@ -244,7 +244,7 @@ function install_tools() {
 		}
 
 		# Pull the latest changes
-		git pull &>/dev/null
+		git pull
 		exit_status=$?
 		if [[ $exit_status -ne 0 ]]; then
 			echo -e "${red}Failed to pull updates for repository $repo.${reset}"
@@ -256,48 +256,48 @@ function install_tools() {
 		# Install requirements inside a virtual environment
 		if [[ -s "requirements.txt" ]]; then
 			if [[ ! -f "venv/bin/activate" ]]; then
-				python3 -m venv venv &>/dev/null
+				python3 -m venv venv
 			fi
 			source venv/bin/activate
-			eval "pip3 install --upgrade -r requirements.txt $DEBUG_STD" &>/dev/null
+			eval "pip3 install --upgrade -r requirements.txt $DEBUG_STD"
 			deactivate
 		fi
 
 		# Special handling for certain repositories
 		case "$repo" in
 		"massdns")
-			make &>/dev/null && strip -s bin/massdns && "$SUDO" cp bin/massdns /usr/local/bin/ &>/dev/null
+			make  && strip -s bin/massdns && "$SUDO" cp bin/massdns /usr/local/bin/
 			;;
 		"gitleaks")
-			make build &>/dev/null && "$SUDO" cp ./gitleaks /usr/local/bin/ &>/dev/null
+			make build  && "$SUDO" cp ./gitleaks /usr/local/bin/
 			;;
 		"nomore403")
-			go get &>/dev/null
-			go build &>/dev/null
+			go get
+			go build
 			chmod +x ./nomore403
 			;;
 		"ffufPostprocessing")
-			git reset --hard origin/master &>/dev/null
-			git pull &>/dev/null
-			go build -o ffufPostprocessing main.go &>/dev/null
+			git reset --hard origin/master
+			git pull
+			go build -o ffufPostprocessing main.go
 			chmod +x ./ffufPostprocessing
 			;;
 		"misconfig-mapper")
-			git reset --hard origin/main &>/dev/null
-			git pull &>/dev/null
-			go build -o misconfig-mapper &>/dev/null
+			git reset --hard origin/main
+			git pull
+			go build -o misconfig-mapper
 			chmod +x ./misconfig-mapper
 			;;
 		"trufflehog")
-			go install &>/dev/null
+			go install
 			;;
 		esac
 
 		# Copy gf patterns if applicable
 		if [[ $repo == "gf" ]]; then
-			cp -r examples ${HOME}/.gf &>/dev/null
+			cp -r examples ${HOME}/.gf
 		elif [[ $repo == "Gf-Patterns" ]]; then
-			cp ./*.json ${HOME}/.gf &>/dev/null
+			cp ./*.json ${HOME}/.gf
 		fi
 
 		# Return to the main directory
@@ -310,9 +310,9 @@ function install_tools() {
 	done
 
 	# Notify and ensure subfinder is installed twice (as per original script)
-	notify &>/dev/null
-	subfinder &>/dev/null
-	subfinder &>/dev/null
+	notify
+	subfinder
+	subfinder
 
 	# Handle failed installations
 	if [[ ${#failed_tools[@]} -ne 0 ]]; then
@@ -349,8 +349,8 @@ function check_updates() {
 				mv reconftw.cfg reconftw.cfg_bck
 				echo -e "${yellow}reconftw.cfg has been backed up to reconftw.cfg_bck${reset}\n"
 			fi
-			git reset --hard &>/dev/null
-			git pull &>/dev/null
+			git reset --hard
+			git pull
 			echo -e "${bgreen}Updated! Running the new installer version...${reset}\n"
 		else
 			echo -e "${bgreen}reconFTW is already up to date!${reset}\n"
@@ -372,32 +372,32 @@ function install_golang_version() {
 	echo -e "${bblue}Running: Installing/Updating Golang($version) ${reset}\n"
 
 	if [[ $install_golang == "true" ]]; then
-		if command -v go &>/dev/null && [[ $version == "$(go version | awk '{print $3}')" ]]; then
+		if command -v go  && [[ $version == "$(go version | awk '{print $3}')" ]]; then
 			echo -e "${bgreen}Golang is already installed and up to date.${reset}\n"
 		else
-			"$SUDO" rm -rf /usr/local/go &>/dev/null || true
+			"$SUDO" rm -rf /usr/local/go  || true
 
 			case "$ARCH" in
 			arm64 | aarch64)
 				if [[ $IS_MAC == "True" ]]; then
-					wget "https://dl.google.com/go/${version}.darwin-arm64.tar.gz" -O "/tmp/${version}.darwin-arm64.tar.gz" &>/dev/null
-					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.darwin-arm64.tar.gz" &>/dev/null
+					wget "https://dl.google.com/go/${version}.darwin-arm64.tar.gz" -O "/tmp/${version}.darwin-arm64.tar.gz"
+					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.darwin-arm64.tar.gz"
 				else
-					wget "https://dl.google.com/go/${version}.linux-arm64.tar.gz" -O "/tmp/${version}.linux-arm64.tar.gz" &>/dev/null
-					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-arm64.tar.gz" &>/dev/null
+					wget "https://dl.google.com/go/${version}.linux-arm64.tar.gz" -O "/tmp/${version}.linux-arm64.tar.gz"
+					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-arm64.tar.gz"
 				fi
 				;;
 			armv6l | armv7l)
-				wget "https://dl.google.com/go/${version}.linux-armv6l.tar.gz" -O "/tmp/${version}.linux-armv6l.tar.gz" &>/dev/null
-				"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-armv6l.tar.gz" &>/dev/null
+				wget "https://dl.google.com/go/${version}.linux-armv6l.tar.gz" -O "/tmp/${version}.linux-armv6l.tar.gz"
+				"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-armv6l.tar.gz"
 				;;
 			amd64 | x86_64)
 				if [[ $IS_MAC == "True" ]]; then
-					wget "https://dl.google.com/go/${version}.darwin-amd64.tar.gz" -O "/tmp/${version}.darwin-amd64.tar.gz" &>/dev/null
-					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.darwin-amd64.tar.gz" &>/dev/null
+					wget "https://dl.google.com/go/${version}.darwin-amd64.tar.gz" -O "/tmp/${version}.darwin-amd64.tar.gz"
+					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.darwin-amd64.tar.gz"
 				else
-					wget "https://dl.google.com/go/${version}.linux-amd64.tar.gz" -O "/tmp/${version}.linux-amd64.tar.gz" &>/dev/null
-					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-amd64.tar.gz" &>/dev/null
+					wget "https://dl.google.com/go/${version}.linux-amd64.tar.gz" -O "/tmp/${version}.linux-amd64.tar.gz"
+					"$SUDO" tar -C /usr/local -xzf "/tmp/${version}.linux-amd64.tar.gz"
 				fi
 				;;
 			*)
@@ -463,45 +463,45 @@ function install_system_packages() {
 
 # Function to install required packages for Debian-based systems
 function install_apt() {
-	"$SUDO" apt-get update -y &>/dev/null
-	"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y python3 python3-pip python3-venv pipx python3-virtualenv build-essential gcc cmake ruby whois git curl libpcap-dev wget zip python3-dev pv dnsutils libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev nmap jq apt-transport-https lynx medusa xvfb libxml2-utils procps bsdmainutils libdata-hexdump-perl &>/dev/null
+	"$SUDO" apt-get update -y
+	"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y python3 python3-pip python3-venv pipx python3-virtualenv build-essential gcc cmake ruby whois git curl libpcap-dev wget zip python3-dev pv dnsutils libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev nmap jq apt-transport-https lynx medusa xvfb libxml2-utils procps bsdmainutils libdata-hexdump-perl
 	# Move chromium browser dependencies (required by `nuclei -headless -id screenshot`) into a separate apt install command, and add a fallback for Ubuntu 24.04 (where `libasound2` is renamed to `libasound2t64`)
-	"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2 &>/dev/null || \
-		"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2t64 &>/dev/null
+	"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2 || \
+		"$SUDO" DEBIAN_FRONTEND="noninteractive" apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon-x11-0 libxcomposite-dev libxdamage1 libxrandr2 libgbm-dev libpangocairo-1.0-0 libasound2t64
 	curl https://sh.rustup.rs -sSf | sh -s -- -y >/dev/null 2>&1
 	source "${HOME}/.cargo/env"
-	cargo install ripgen &>/dev/null
+	cargo install ripgen
 }
 
 # Function to install required packages for macOS
 function install_brew() {
-	if command -v brew &>/dev/null; then
+	if command -v brew ; then
 		echo -e "${bgreen}brew is already installed.${reset}\n"
 	else
 		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	fi
-	brew update &>/dev/null
-	brew install --formula bash coreutils gnu-getopt python pipx massdns jq gcc cmake ruby git curl wget zip pv bind whois nmap jq lynx medusa &>/dev/null
-	brew install rustup &>/dev/null
-	rustup-init -y &>/dev/null
-	cargo install ripgen &>/dev/null
+	brew update
+	brew install --formula bash coreutils gnu-getopt python pipx massdns jq gcc cmake ruby git curl wget zip pv bind whois nmap jq lynx medusa
+	brew install rustup
+	rustup-init -y
+	cargo install ripgen
 }
 
 # Function to install required packages for RedHat-based systems
 function install_yum() {
-	"$SUDO" yum groupinstall "Development Tools" -y &>/dev/null
-	"$SUDO" yum install -y python3 python3-pip gcc cmake ruby git curl libpcap whois wget pipx zip pv bind-utils openssl-devel libffi-devel libxml2-devel libxslt-devel zlib-devel nmap jq lynx medusa xorg-x11-server-xvfb &>/dev/null
+	"$SUDO" yum groupinstall "Development Tools" -y
+	"$SUDO" yum install -y python3 python3-pip gcc cmake ruby git curl libpcap whois wget pipx zip pv bind-utils openssl-devel libffi-devel libxml2-devel libxslt-devel zlib-devel nmap jq lynx medusa xorg-x11-server-xvfb
 	curl https://sh.rustup.rs -sSf | sh -s -- -y >/dev/null 2>&1
 	source "${HOME}/.cargo/env"
-	cargo install ripgen &>/dev/null
+	cargo install ripgen
 }
 
 # Function to install required packages for Arch-based systems
 function install_pacman() {
-	"$SUDO" pacman -Sy --noconfirm python python-pip base-devel gcc cmake ruby git curl libpcap python-pipx whois wget zip pv bind openssl libffi libxml2 libxslt zlib nmap jq lynx medusa xorg-server-xvfb &>/dev/null
+	"$SUDO" pacman -Sy --noconfirm python python-pip base-devel gcc cmake ruby git curl libpcap python-pipx whois wget zip pv bind openssl libffi libxml2 libxslt zlib nmap jq lynx medusa xorg-server-xvfb
 	curl https://sh.rustup.rs -sSf | sh -s -- -y >/dev/null 2>&1
 	source "${HOME}/.cargo/env"
-	cargo install ripgen &>/dev/null
+	cargo install ripgen
 }
 
 # Function to perform initial setup
@@ -618,13 +618,13 @@ function initial_setup() {
 	if [[ $generate_resolvers == true ]]; then
 		if [[ ! -s $resolvers || $(find "$resolvers" -mtime +1 -print) ]]; then
 			echo -e "${yellow}Checking resolvers lists...\nAccurate resolvers are the key to great results.\nThis may take around 10 minutes if it's not updated.${reset}\n"
-			rm -f "$resolvers" &>/dev/null
-			dnsvalidator -tL https://public-dns.info/nameservers.txt -threads "$DNSVALIDATOR_THREADS" -o "$resolvers" &>/dev/null
-			dnsvalidator -tL https://raw.githubusercontent.com/blechschmidt/massdns/master/lists/resolvers.txt -threads "$DNSVALIDATOR_THREADS" -o tmp_resolvers &>/dev/null
+			rm -f "$resolvers"
+			dnsvalidator -tL https://public-dns.info/nameservers.txt -threads "$DNSVALIDATOR_THREADS" -o "$resolvers"
+			dnsvalidator -tL https://raw.githubusercontent.com/blechschmidt/massdns/master/lists/resolvers.txt -threads "$DNSVALIDATOR_THREADS" -o tmp_resolvers
 
 			if [[ -s "tmp_resolvers" ]]; then
 				cat tmp_resolvers | anew -q "$resolvers"
-				rm -f tmp_resolvers &>/dev/null
+				rm -f tmp_resolvers
 			fi
 
 			[[ ! -s $resolvers ]] && wget -q -O "$resolvers" https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt
@@ -642,8 +642,8 @@ function initial_setup() {
 	fi
 
 	# Strip all Go binaries and copy to /usr/local/bin
-	strip -s "${GOPATH}/bin/"* &>/dev/null || true
-	"$SUDO" cp "${GOPATH}/bin/"* /usr/local/bin/ &>/dev/null || true
+	strip -s "${GOPATH}/bin/"*  || true
+	"$SUDO" cp "${GOPATH}/bin/"* /usr/local/bin/  || true
 
 	# Final reminders
 	echo -e "${yellow}Remember to set your API keys:\n- subfinder (${HOME}/.config/subfinder/provider-config.yaml)\n- GitHub (${HOME}/Tools/.github_tokens)\n- GitLab (${HOME}/Tools/.gitlab_tokens)\n- SSRF Server (COLLAB_SERVER in reconftw.cfg or env var)\n- Blind XSS Server (XSS_SERVER in reconftw.cfg or env var)\n- notify (${HOME}/.config/notify/provider-config.yaml)\n- WHOISXML API (WHOISXML_API in reconftw.cfg or env var)\n${reset}"
