@@ -125,7 +125,7 @@ declare -A repos=(
 	["fav-up"]="pielco11/fav-up"
 	["massdns"]="blechschmidt/massdns"
 	["Oralyzer"]="r0075h3ll/Oralyzer"
-	["testssl"]="drwetter/testssl.sh"
+	["testssl.sh"]="drwetter/testssl.sh"
 	["JSA"]="w9w/JSA"
 	["CloudHunter"]="belane/CloudHunter"
 	["ultimate-nmap-parser"]="shifty0g/ultimate-nmap-parser"
@@ -585,6 +585,7 @@ function initial_setup() {
 		eval git -C "${tools}/fuzzing-templates" pull $DEBUG_STD
 	fi
 
+	# FIXME
 	# sqlmap
 	if [[ ! -d "${dir}/sqlmap" ]]; then
 		#printf "${yellow}Cloning sqlmap...${reset}\n"
@@ -594,15 +595,17 @@ function initial_setup() {
 		eval git -C "${dir}/sqlmap" pull $DEBUG_STD
 	fi
 
+	# FIXME
 	# testssl.sh
-	if [[ ! -d "${dir}/testssl.sh" ]]; then
-		#printf "${yellow}Cloning testssl.sh...${reset}\n"
-		eval git clone --depth 1 https://github.com/drwetter/testssl.sh.git "${dir}/testssl.sh" $DEBUG_STD
-	else
-		#printf "${yellow}Updating testssl.sh...${reset}\n"
-		eval git -C "${dir}/testssl.sh" pull $DEBUG_STD
-	fi
+#	if [[ ! -d "${dir}/testssl.sh" ]]; then
+#		#printf "${yellow}Cloning testssl.sh...${reset}\n"
+#		eval git clone --depth 1 https://github.com/drwetter/testssl.sh.git "${dir}/testssl.sh" $DEBUG_STD
+#	else
+#		#printf "${yellow}Updating testssl.sh...${reset}\n"
+#		eval git -C "${dir}/testssl.sh" pull $DEBUG_STD
+#	fi
 
+	# FIXME
 	# massdns
 	if [[ ! -d "${dir}/massdns" ]]; then
 		#printf "${yellow}Cloning and compiling massdns...${reset}\n"
@@ -615,25 +618,27 @@ function initial_setup() {
 		eval git -C "${dir}/massdns" pull $DEBUG_STD
 	fi
 
+	# FIXME
 	# Interlace
-	if [[ ! -d "${dir}/interlace" ]]; then
-		#printf "${yellow}Cloning Interlace...${reset}\n"
-		eval git clone https://github.com/codingo/Interlace.git "${dir}/interlace" $DEBUG_STD
-		eval cd "${dir}/interlace" && eval $SUDO python3 setup.py install $DEBUG_STD
-	else
-		#printf "${yellow}Updating Interlace...${reset}\n"
-		eval git -C "${dir}/interlace" pull $DEBUG_STD
-	fi
+#	if [[ ! -d "${dir}/interlace" ]]; then
+#		#printf "${yellow}Cloning Interlace...${reset}\n"
+#		eval git clone https://github.com/codingo/Interlace.git "${dir}/interlace" $DEBUG_STD
+#		eval cd "${dir}/interlace" && eval $SUDO python3 setup.py install $DEBUG_STD
+#	else
+#		#printf "${yellow}Updating Interlace...${reset}\n"
+#		eval git -C "${dir}/interlace" pull $DEBUG_STD
+#	fi
 
+	# FIXME
 	# wafw00f
-	if [[ ! -d "${dir}/wafw00f" ]]; then
-		#printf "${yellow}Cloning wafw00f...${reset}\n"
-		eval git clone https://github.com/EnableSecurity/wafw00f.git "${dir}/wafw00f" $DEBUG_STD
-		eval cd "${dir}/wafw00f" && eval $SUDO python3 setup.py install $DEBUG_STD
-	else
-		#printf "${yellow}Updating wafw00f...${reset}\n"
-		eval git -C "${dir}/wafw00f" pull $DEBUG_STD
-	fi
+#	if [[ ! -d "${dir}/wafw00f" ]]; then
+#		#printf "${yellow}Cloning wafw00f...${reset}\n"
+#		eval git clone https://github.com/EnableSecurity/wafw00f.git "${dir}/wafw00f" $DEBUG_STD
+#		eval cd "${dir}/wafw00f" && eval $SUDO python3 setup.py install $DEBUG_STD
+#	else
+#		#printf "${yellow}Updating wafw00f...${reset}\n"
+#		eval git -C "${dir}/wafw00f" pull $DEBUG_STD
+#	fi
 
 	# gf patterns
 	if [[ ! -d "$HOME/.gf" ]]; then
