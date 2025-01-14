@@ -268,6 +268,10 @@ function tools_installed() {
 
 	printf "%b[%s] Tools check finished%b\n" "$bblue" "$(date +'%Y-%m-%d %H:%M:%S')" "$reset"
 	printf "%b#######################################################################\n%b" "$bgreen" "$reset"
+
+	if [[ $CHECK_TOOLS_OR_EXIT == true && $all_installed != true ]]; then
+		exit 2
+	fi
 }
 
 #####################################################################cc##########################################
@@ -6053,7 +6057,12 @@ if [[ $OSTYPE == "darwin"* ]]; then
 	PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 fi
 
-PROGARGS=$(getopt -o 'd:m:l:x:i:o:f:q:c:z:rspanwvh::' --long 'domain:,list:,recon,subdomains,passive,all,web,osint,zen,deep,help,vps' -n 'reconFTW' -- "$@")
+PROGARGS=$(getopt -o 'd:m:l:x:i:o:f:q:c:z:rspanwvh::' --long 'domain:,list:,recon,subdomains,passive,all,web,osint,zen,deep,help,vps,check-tools' -n 'reconFTW' -- "$@")
+
+exit_status=$?
+if [[ $exit_status -ne 0 ]]; then
+	UNKNOWN_ARGUMENT=true
+fi
 
 # Note the quotes around "$PROGARGS": they are essential!
 eval set -- "$PROGARGS"
@@ -6170,13 +6179,18 @@ while true; do
 		shift
 		break
 		;;
-	'--help' | '-h' | *)
+	'--check-tools')
+		CHECK_TOOLS_OR_EXIT=true
+		shift
+		continue
+		;;
+	'--help' | '-h')
+		break
+		;;
+	*)
 		# echo "Unknown argument: $1"
-		. ./reconftw.cfg
-		banner
-		help
-		tools_installed
-		exit 1
+		UNKNOWN_ARGUMENT=true
+		break
 		;;
 	esac
 done
@@ -6408,6 +6422,8 @@ case $opt_mode in
 *)
 	help
 	tools_installed
-	exit 1
+	if [[ $UNKNOWN_ARGUMENT == true ]]; then
+		exit 1
+	fi
 	;;
 esac
