@@ -1,0 +1,32 @@
+name: deleteme
+
+on: [push]
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-14
+
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Bash shell version before
+        shell: bash
+        run: echo $BASH_VERSION
+
+      - name: Install bash from homebrew
+        if: ${{ startsWith(matrix.os, 'macos-') }}
+        shell: bash
+        run: brew install bash
+
+      - name: Bash binary version
+        shell: bash
+        run: bash --version
+
+      - name: Bash shell version after
+        shell: bash
+        run: echo $BASH_VERSION
