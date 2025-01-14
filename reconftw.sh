@@ -6057,11 +6057,11 @@ if [[ $OSTYPE == "darwin"* ]]; then
 		printf "\n%bBrew is not installed or not in the PATH.%b\n\n" "$bred" "$reset"
 		exit 1
 	fi
-	if [[ -x "$(brew --prefix gnu-getopt)/bin/getopt" ]]; then
+	if [[ ! -x "$(brew --prefix gnu-getopt)/bin/getopt" ]]; then
 		printf "\n%bBrew forumlae gnu-getopt is not installed.%b\n\n" "$bred" "$reset"
 		exit 1
 	fi
-	if [[ -d "$(brew --prefix coreutils)/libexec/gnubin" ]]; then
+	if [[ ! -d "$(brew --prefix coreutils)/libexec/gnubin" ]]; then
 		printf "\n%bBrew forumlae coreutils is not installed.%b\n\n" "$bred" "$reset"
 		exit 1
 	fi
