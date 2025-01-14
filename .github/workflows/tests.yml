@@ -32,4 +32,4 @@ jobs:
 
       - name: Check if all tools are installed
         shell: bash
-        run: ./reconftw.sh
+        run: ./reconftw.sh --check-tools
