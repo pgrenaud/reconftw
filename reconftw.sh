@@ -6053,8 +6053,13 @@ function help() {
 
 # macOS PATH initialization, thanks @0xtavian <3
 if [[ $OSTYPE == "darwin"* ]]; then
-	PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
-	PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+	if ! command -v brew &> /dev/null; then
+		printf "\n%bBrew is not installed or not in the PATH.%b\n\n" "$bred" "$reset"
+		exit 1
+	fi
+	# Prefix is different depending on Intel vs Apple Silicon
+	PATH="$(brew --prefix gnu-getopt)/bin:$PATH"
+	PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 fi
 
 PROGARGS=$(getopt -o 'd:m:l:x:i:o:f:q:c:z:rspanwvh::' --long 'domain:,list:,recon,subdomains,passive,all,web,osint,zen,deep,help,vps,check-tools' -n 'reconFTW' -- "$@")
