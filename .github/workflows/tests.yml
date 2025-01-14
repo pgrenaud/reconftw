@@ -1,0 +1,38 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-14
+          - macos-15
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - ubuntu-24.04
+
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install reconFTW
+        shell: bash
+        continue-on-error: true
+        run: ./install.sh
+
+      - name: Run reconFTW
+        id: tools_installed
+        shell: bash
+        continue-on-error: true
+        run: ./reconftw.sh
+
+      - name: Check if all tools are installed
+        if: ${{ ! contains(steps.tools_installed.outputs.stdout, 'All tools are installed!') }}
+        shell: bash
+        run: echo 'Install failed' && exit 1
