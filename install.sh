@@ -228,19 +228,6 @@ function install_tools() {
 		echo -e "${yellow}$pipxtool installed (${pipx_step}/${#pipxtools[@]})${reset}"
 	done
 
-#	if [[ $upgrade_tools == "true" ]]; then
-#		eval pipx upgrade-all &>/dev/null
-#		exit_status=$?
-#		if [[ $exit_status -eq 0 ]]; then
-#			echo -e "${yellow}All pipx tools upgraded${reset}"
-#		else
-#			echo -e "${red}Unable to upgrade all pipx tools${reset}"
-#			# FIXME
-#			failed_tools+=("pipx-upgrade-all")
-#			double_check=true
-#		fi
-#	fi
-
 	echo -e "\n${bblue}Running: Installing repositories (${#repos[@]})${reset}\n"
 
 	local repos_step=0
@@ -283,13 +270,6 @@ function install_tools() {
 			double_check=true
 			continue
 		fi
-
-#		# Install dependencies if setup.py exists
-#		if [[ -f "setup.py" || -f "pyproject.toml" ]]; then
-#			# FIXME
-#			eval "$SUDO pipx install . $DEBUG_STD" &>/dev/null
-#			eval "$SUDO pip3 install . $DEBUG_STD" &>/dev/null
-#		fi
 
 		# Install requirements inside a virtual environment
 		if [[ -s "requirements.txt" ]]; then
@@ -558,16 +538,8 @@ function initial_setup() {
 	touch "${dir}/.github_tokens"
 	touch "${dir}/.gitlab_tokens"
 
-	# FIXME: remove this
-#	wget -N -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py &>/dev/null
-#	python3 /tmp/get-pip.py &>/dev/null
-#	rm -f /tmp/get-pip.py
-
 	eval pipx ensurepath $DEBUG_STD
 	source "${profile_shell}"
-
-#	pipx install reconftw &>/dev/null
-#	pipx inject mkdocs -r requirements.txt &>/dev/null
 
 	install_tools
 
@@ -588,7 +560,6 @@ function initial_setup() {
 		eval git -C "${tools}/fuzzing-templates" pull $DEBUG_STD
 	fi
 
-	# FIXME
 	# sqlmap
 	if [[ ! -d "${dir}/sqlmap" ]]; then
 		#printf "${yellow}Cloning sqlmap...${reset}\n"
@@ -598,17 +569,6 @@ function initial_setup() {
 		eval git -C "${dir}/sqlmap" pull $DEBUG_STD
 	fi
 
-	# FIXME
-	# testssl.sh
-#	if [[ ! -d "${dir}/testssl.sh" ]]; then
-#		#printf "${yellow}Cloning testssl.sh...${reset}\n"
-#		eval git clone --depth 1 https://github.com/drwetter/testssl.sh.git "${dir}/testssl.sh" $DEBUG_STD
-#	else
-#		#printf "${yellow}Updating testssl.sh...${reset}\n"
-#		eval git -C "${dir}/testssl.sh" pull $DEBUG_STD
-#	fi
-
-	# FIXME
 	# massdns
 	if [[ ! -d "${dir}/massdns" ]]; then
 		#printf "${yellow}Cloning and compiling massdns...${reset}\n"
@@ -620,28 +580,6 @@ function initial_setup() {
 		#printf "${yellow}Updating massdns...${reset}\n"
 		eval git -C "${dir}/massdns" pull $DEBUG_STD
 	fi
-
-	# FIXME
-	# Interlace
-#	if [[ ! -d "${dir}/interlace" ]]; then
-#		#printf "${yellow}Cloning Interlace...${reset}\n"
-#		eval git clone https://github.com/codingo/Interlace.git "${dir}/interlace" $DEBUG_STD
-#		eval cd "${dir}/interlace" && eval $SUDO python3 setup.py install $DEBUG_STD
-#	else
-#		#printf "${yellow}Updating Interlace...${reset}\n"
-#		eval git -C "${dir}/interlace" pull $DEBUG_STD
-#	fi
-
-	# FIXME
-	# wafw00f
-#	if [[ ! -d "${dir}/wafw00f" ]]; then
-#		#printf "${yellow}Cloning wafw00f...${reset}\n"
-#		eval git clone https://github.com/EnableSecurity/wafw00f.git "${dir}/wafw00f" $DEBUG_STD
-#		eval cd "${dir}/wafw00f" && eval $SUDO python3 setup.py install $DEBUG_STD
-#	else
-#		#printf "${yellow}Updating wafw00f...${reset}\n"
-#		eval git -C "${dir}/wafw00f" pull $DEBUG_STD
-#	fi
 
 	# gf patterns
 	if [[ ! -d "$HOME/.gf" ]]; then
