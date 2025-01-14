@@ -295,7 +295,7 @@ function install_tools() {
 			chmod +x ./nomore403
 			;;
 		"ffufPostprocessing")
-			git reset --hard origin/main &>/dev/null
+			git reset --hard origin/master &>/dev/null
 			git pull &>/dev/null
 			go build -o ffufPostprocessing main.go &>/dev/null
 			chmod +x ./ffufPostprocessing
@@ -315,7 +315,7 @@ function install_tools() {
 		if [[ $repo == "gf" ]]; then
 			cp -r examples ${HOME}/.gf &>/dev/null
 		elif [[ $repo == "Gf-Patterns" ]]; then
-			mv ./*.json ${HOME}/.gf &>/dev/null
+			cp ./*.json ${HOME}/.gf &>/dev/null
 		fi
 
 		# Return to the main directory
@@ -539,7 +539,7 @@ function initial_setup() {
 	touch "${dir}/.gitlab_tokens"
 
 	eval pipx ensurepath $DEBUG_STD
-	source "${profile_shell}"
+	source "${HOME}/${profile_shell}"
 
 	install_tools
 
