@@ -99,7 +99,6 @@ declare -A gotools=(
 	["sourcemapper"]="go install -v github.com/denandz/sourcemapper@latest"
 	["jsluice"]="go install -v github.com/BishopFox/jsluice/cmd/jsluice@latest"
 	["urlfinder"]="go install -v github.com/projectdiscovery/urlfinder/cmd/urlfinder@latest"
-	["trufflehog"]="go install -v github.com/trufflesecurity/trufflehog@latest"
 )
 
 # Declare pipx tools and their paths
@@ -136,6 +135,7 @@ declare -A repos=(
 	["Web-Cache-Vulnerability-Scanner"]="Hackmanit/Web-Cache-Vulnerability-Scanner"
 	["regulator"]="cramppet/regulator"
 	["gitleaks"]="gitleaks/gitleaks"
+	["trufflehog"]="trufflesecurity/trufflehog"
 	["nomore403"]="devploit/nomore403"
 	["SwaggerSpy"]="UndeadSec/SwaggerSpy"
 	["LeakSearch"]="JoelGMSec/LeakSearch"
@@ -325,6 +325,9 @@ function install_tools() {
 			git pull &>/dev/null
 			go build -o misconfig-mapper &>/dev/null
 			chmod +x ./misconfig-mapper
+			;;
+		"trufflehog")
+			go install
 			;;
 		esac
 
