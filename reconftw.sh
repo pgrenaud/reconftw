@@ -170,6 +170,7 @@ function tools_installed() {
 		["zip"]="zip"
 		["nmap"]="nmap"
 		["dig"]="dig"
+		["timeout"]="timeout"
 		["brutespray"]="brutespray"
 		["xnLinkFinder"]="xnLinkFinder"
 		["urlfinder"]="urlfinder"
