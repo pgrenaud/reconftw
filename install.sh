@@ -289,7 +289,7 @@ function install_tools() {
 			chmod +x ./misconfig-mapper
 			;;
 		"trufflehog")
-			go install
+			go install &>/dev/null
 			;;
 		esac
 

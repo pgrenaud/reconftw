@@ -231,6 +231,7 @@ function tools_installed() {
 		["jsluice"]="jsluice"
 		["commix"]="commix"
 		["urless"]="urless"
+		["dnstake"]="dnstake"
 	)
 
 	# Check for tool files
